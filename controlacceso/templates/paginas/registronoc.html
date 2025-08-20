@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block titulo %} ✍️REGISTRO {% endblock %} 
+
+{% block contenido %}
+
+<div class="col-md-11">   
+        <table class="table">
+    <thead>
+        <tr>
+            <th>T.ID</th>
+            <th>N° IDENTIFICACION</th>
+            <th>NOMBRE</th>
+            <th>APELLIDO</th>
+            <th>ACCION</th>
+            <th>HORA DE INGRESO</th>
+            <th>HORA DE SALIDA</th>
+            <th>MOTIVO VISITA</th>
+                   
+        </tr>
+    </thead>
+    <tbody>
+    {% for visitante in visitantes %}
+    <tr>
+            <td>{{ visitante.tipoidentificacion }}</td>
+            <td>{{ visitante.identificacion }}</td>
+            <td>{{ visitante.nombre }}</td>
+            <td>{{ visitante.apellido }}</td>
+            <td>
+                <button type="button"  
+                        class="btn {% if visitante.firma %}btn-success{% else %}btn-primary{% endif %}"
+                        id="botonfirma{{ visitante.id }}" 
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalfirma"
+                        data-id="{{ visitante.id }}">
+                        {% if visitante.firma %}FIRMADO{% else %}FIRMAR{% endif %}
+                </button>  
+            </td>
+
+            <td>
+                {% if visitante.horadeingresonoc %}
+                    {{ visitante.horadeingresonoc|date:"d/m/Y H:i" }}
+                {% else %}
+                    ⏳ Sin firma
+                {% endif %}
+            </td>
+
+
+        <form method="POST" action="{% url 'guardar_salida_noc' %}">
+            
+            <input type="hidden" name="visitante_id" value="{{ visitante.id }}">
+
+            {% csrf_token %}
+            <td>
+                    <input type="datetime-local"
+                            name="horadesalidanoc"
+                            id="horadesalida" 
+                            style="width: 150px"
+                    >
+            </td>
+            
+
+            <!--    
+           <td>    
+                <select name="motivovisita">
+                        <option value="">Seleccione...</option>
+                        <option value="VISITA">Visita</option>
+                        <option value="MANTENIMIENTO">Mantenimiento</option>
+                        <option value="REPARACION">Reparacion</option>
+                </select>
+            </td> -->
+
+            <td>
+                {% if not deshabilitar_motivo %}
+                    <!-- Select habilitado cuando el campo está vacío -->
+                    <select name="motivovisita">
+                        <option value="">Seleccione...</option>
+                        <option value="VISITA" {% if visitante.motivovisita == "VISITA" %}selected{% endif %}>Visita</option>
+                        <option value="MANTENIMIENTO" {% if visitante.motivovisita == "MANTENIMIENTO" %}selected{% endif %}>Mantenimiento</option>
+                        <option value="REPARACION" {% if visitante.motivovisita == "REPARACION" %}selected{% endif %}>Reparacion</option>
+                    </select>
+                {% else %} 
+                    <!-- Mostrar texto cuando el campo ya tiene información -->
+                    <p>{{ visitante.motivovisita }}</p>
+                    <!-- Campo oculto para mantener el valor en el formulario -->
+                    <input type="hidden" name="motivovisita" value="{{ visitante.motivovisita }}">
+                {% endif %}
+            </td>
+
+
+
+            <td>
+                <button type="submit">☑️</button>  
+            </td>
+        </form>
+
+            
+    </tr>
+        
+
+
+                    <!-- MODAL DE FIRMA -->
+                <form action="{% url 'guardar_firma' %}" method="POST">
+                    {% csrf_token %}
+                    <div class="modal fade" id="modalfirma" tabindex="-1" aria-labelledby="modalfirmalabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+
+                                    <div class="modal-header">
+                                         <h5 class="modal-title" id="modalfirmalabel">✍️ INGRESE FIRMA DEL VISITANTE</h5>
+                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="cerrar"></button>
+                                    </div>
+                                
+                                    <div class="modal-body">
+                                        <canvas id="canvasfirma" width="300" height="150" style="border:1px solid #000;"></canvas>
+                                        <input type="hidden" name="firma" id="firmainput">
+                                        <input type="hidden" name="visitante_id" id="firmainputID" value="">
+                                    </div>
+                                    
+                                        
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">❌ Cancelar</button>     
+                                        <button type="submit" class="btn btn-success"  onclick="return guardarfirma()">✅ Guardar Firma</button>
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                
+        {% endfor %}
+
+        <!-- LLAMA LA SCRIPT DE FIRMAS-->
+        {% load static %}
+        <script src="{% static 'js/firma.js' %}"></script>
+
+     </tbody>
+ </div>
+ {% endblock %} 

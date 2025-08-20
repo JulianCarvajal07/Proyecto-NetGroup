@@ -1,0 +1,317 @@
+{% extends "base.html" %}
+
+{% block titulo %} {% endblock %} 
+
+{% block contenido %}
+
+<form method="POST"  action="{% url 'preregistro' %}">
+    {% csrf_token %}
+
+    {{ form.as_p }}
+<!-- MENSAJE DE EXITO CUANDO SE INGRESA UN USUARIO-->
+           {% if messages %}
+                <div class="container mt-3">
+                    {% for message in messages %}
+                      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                      </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+
+            
+
+        <div class="row mb-5">
+             
+            
+
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Tipo Identificacion</h4>
+                            <select class="form-control" name="txttipoidentificacion" id="txttipoidentificacion">
+                                <option value="">Seleccione...</option>
+                                <option value="CC">Cedula</option>
+                                <option value="TI">Tarjeta de Identidad</option>
+                                <option value="DNI">DNI</option>
+                                <option value="PSP">Pasaporte</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Numero identificacion</h4>
+                            <input type="number" class="form-control" name="txtidentificacion" id="txtidentificacion" placeholder="">                            
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Nombre</h4>
+                            <input type="text" class="form-control" name="txtnombre" id="txtnombre" placeholder="">
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Apellido</h4>
+                            <input type="text" class="form-control" name="txtapellido" id="txtapellido" placeholder="">                  
+                        </div>
+                    </div>
+                </div>
+        </div>
+
+
+                
+
+
+        <div class="row">
+
+
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Telefono</h4>
+                            <input type="tel" class="form-control" name="txttelefono" id="txttelefono" placeholder="">
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Empresa</h4>
+                            <input type="text" class="form-control" name="txtempresa" id="txtempresa" placeholder="">
+                        </div>
+                    </div>
+                </div>  
+                
+
+
+                
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Cargo</h4>
+                            <input type="text" class="form-control" name="txtcargo" id="txtcargo" placeholder="">
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Ingresa vehiculo</h4>
+
+                            <select id="ingresavehiculo" class="form-control me-2" name="txtingresavehiculo" id="txtingresavehiculo" value="Si" onclick="mostrarplaca()">
+                                <option value="">Seleccione...</option>
+                                <option value="1">Sí</option>
+                                <option value="0">No</option>
+                            </select>
+                            <br>
+                            <input id="placa" class="form-control" type="text" name="txtplaca" id="txtplaca" placeholder="Placa" style="max-width:150px;">
+                    </div>
+                    </div>   
+                </div>        
+        </div> 
+
+
+
+        <div class="row">
+
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">No. Tarjeta</h4>
+                            <select class="form-control" name="txtnotarjeta" id="txtnotarjeta">
+                                <option value="">Seleccione...</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12">12</option>
+                                <option value="13">13</option>
+                                <option value="14">14</option>
+                                <option value="15">15</option>
+                                <option value="16">16</option>
+                                <option value="17">17</option>
+                                <option value="18">18</option>
+                                <option value="19">19</option>
+                                <option value="20">20</option>
+                                <option value="21">21</option>
+                                <option value="22">22</option>
+                                <option value="23">23</option>
+                                <option value="24">24</option>
+                                <option value="25">25</option>
+                                <option value="26">26</option>
+                                <option value="27">27</option>
+                                <option value="28">28</option>
+                                <option value="29">29</option>
+                                <option value="30">30</option> 
+                            </select>   
+
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Autoriza</h4>
+                            <select class="form-control" name="txtautoriza" id="txtautoriza">
+                                <option value="">Seleccione...</option>
+                                <option value="gerencia">Gerencia</option>
+                                <option value="talentohumano">Talento Humano</option>
+                                <option value="comercial">Comercial</option>
+                                <option value="murillo">Jhon Freddy Murillo</option>
+                                <option value="anderson">Anderson Rodriguez</option>
+                                <option value="hector">Hector Diaz</option>
+                            </select>
+                            <h4 class="card-title">Motivo visita</h4>
+                            <select class="form-control" name="txtmotivovisita" id="txtmotivovisita">
+                                <option value="">Seleccione...</option>
+                                <option value="VISITA">Visita</option>
+                                <option value="MANTENIMIENTO">Mantenimiento</option>
+                                <option value="REPARACION">Reparacion</option>
+                            </select>
+
+                            
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="col-md-3">
+                        <input type="hidden" name="foto" id="fotoinput">  
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <!-- Vista previa en vivo -->
+                                <video id="video" class="w-75" autoplay playsinline></video>
+                                <!-- Foto capturada -->
+                                <canvas id="canvas" class="mt-3 d-none" style="width: 75%; border-radius: 10px;"></canvas>
+                                <!-- Botón para tomar la foto -->
+                                <div class="d-flex justify-content-center gap-2 mt-3">
+                                    <button type="button" class="btn btn-primary" onclick="tomarFoto()">TOMAR FOTO</button>
+                                    <button type="button" class="btn btn-secondary" onclick="reiniciarCamara()">REINTENTAR</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+
+
+                <div class="col-md-3">
+                        <div class="card-body d-flex flex-column justify-content-center align-items-center" style="height: 200px;">
+                            <button type="submit" name="accion" value="registrar" class="btn btn-primary btn-lg">
+                                REGISTRAR
+                            </button>
+                        </div>
+                </div>
+
+
+            
+
+                           <script>
+                                    const video = document.getElementById('video');
+                                    const canvas = document.getElementById('canvas');
+                                    const fotoInput = document.getElementById('fotoinput');
+
+                                    // Iniciar cámara
+                                    navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+                                        .then(stream => {
+                                        video.srcObject = stream;
+                                        window.localStream = stream; // guardamos para poder detenerla luego si queremos
+                                        })
+                                        .catch(err => {
+                                        console.error("Error accediendo a la cámara: ", err);
+                                        alert("No se pudo acceder a la cámara.");
+                                        });
+
+                                    // FUNCION PARA TOMAR FOTO
+                                    function tomarFoto() {
+                                        const context = canvas.getContext('2d');
+                                        canvas.width = video.videoWidth;
+                                        canvas.height = video.videoHeight;
+
+                                        // Capturar imagen desde el video
+                                        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                                        // Convertir imagen a base64
+                                        const base64 = canvas.toDataURL('image/png');
+                                        fotoinput.value = base64;
+
+                                        // Mostrar solo la imagen, ocultar video (opcional, visualmente más limpio)
+                                        video.classList.add('d-none');
+                                        canvas.classList.remove('d-none');
+
+                                        // Opcional: detener la cámara después de tomar la foto
+                                        if (window.localStream) {
+                                        window.localStream.getTracks().forEach(track => track.stop());
+                                        }
+                                        }
+                                    // FUNCION PARA REINICIAR LA FOTO
+                                    function reiniciarCamara() {
+                                        // Mostrar el video y ocultar el canvas
+                                        video.classList.remove('d-none');
+                                        canvas.classList.add('d-none');
+
+                                    // Volver a iniciar la cámara
+                                    navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+                                        .then(stream => {
+                                        video.srcObject = stream;
+                                        window.localStream = stream; // Guardar el stream para detenerlo luego si es necesario
+                                        })
+                                        .catch(err => {
+                                        console.error("Error al reiniciar la cámara:", err);
+                                        alert("No se pudo reiniciar la cámara.");
+                                        });
+                                        }
+                            </script>
+
+
+
+
+     
+        
+
+    
+        </div>
+
+</form>   
+
+{% endblock %}
+
+
