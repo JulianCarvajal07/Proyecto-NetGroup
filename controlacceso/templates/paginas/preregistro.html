@@ -2,9 +2,11 @@
 
 {% block titulo %} {% endblock %} 
 
+{% load static %}
+
 {% block contenido %}
 
-    <form method="POST" action="{% url 'preregistro' %}" enctype="multipart/form-data">
+<form method="POST" action="{% url 'preregistro' %}" enctype="multipart/form-data">
     {% csrf_token %}
 
     {{ form.as_p }}
@@ -130,17 +132,24 @@
                         <div class="card-body">
                             <h4 class="card-title">Ingresa vehiculo</h4>
 
-                            <select id="ingresavehiculo" class="form-control me-2" name="txtingresavehiculo" id="txtingresavehiculo" value="Si" onclick="mostrarplaca()">
-                                <option value="">SELECCIONE...</option>
-                                <option value="1">SI</option>
-                                <option value="0">NO</option>
-                            </select>
-                            <br>
-                            <input id="placa" class="form-control" type="text" name="txtplaca" id="txtplaca" placeholder="Placa" style="text-transform: uppercase;" style="max-width:150px;">
-                    </div>
-                    </div>   
-                </div>        
-        </div> 
+                                <select id="txtingresavehiculo" name="txtingresavehiculo" class="form-control me-2">
+                                    <option value="">SELECCIONE...</option>
+                                    <option value="1">SI</option>
+                                    <option value="0">NO</option>
+                                </select>
+
+                                <br>
+                                <input id="txtplaca" 
+                                       class="form-control"
+                                       type="text" 
+                                       name="txtplaca"   
+                                       placeholder="Placa" 
+                                       style="text-transform: uppercase; max-width:150px;" 
+                                       disabled>
+                            </div>
+                        </div>   
+                     </div>        
+                 </div> 
 
 
 
@@ -315,7 +324,10 @@
     
         </div>
 
-    </form>   
+</form>  
+
+    <script src="{% static 'js/habilitar_campo_placa.js' %}"></script>
+    
 
 {% endblock %}
 
