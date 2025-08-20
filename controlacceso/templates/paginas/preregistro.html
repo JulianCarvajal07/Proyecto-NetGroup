@@ -4,21 +4,26 @@
 
 {% block contenido %}
 
-<form method="POST"  action="{% url 'preregistro' %}">
+    <form method="POST" action="{% url 'preregistro' %}" enctype="multipart/form-data">
     {% csrf_token %}
 
     {{ form.as_p }}
 <!-- MENSAJE DE EXITO CUANDO SE INGRESA UN USUARIO-->
-           {% if messages %}
-                <div class="container mt-3">
-                    {% for message in messages %}
-                      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.tags == 'error' %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
                         {{ message }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                      </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
+                    </div>
+                {% else %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
 
 
             
@@ -32,11 +37,11 @@
                         <div class="card-body">
                             <h4 class="card-title">Tipo Identificacion</h4>
                             <select class="form-control" name="txttipoidentificacion" id="txttipoidentificacion">
-                                <option value="">Seleccione...</option>
-                                <option value="CC">Cedula</option>
-                                <option value="TI">Tarjeta de Identidad</option>
+                                <option value="">SELECCIONE...</option>
+                                <option value="CC">CEDULA</option>
+                                <option value="TI">TARJETA DE IDENTIDAD</option>
                                 <option value="DNI">DNI</option>
-                                <option value="PSP">Pasaporte</option>
+                                <option value="PSP">PASAPORTE</option>
                             </select>
                         </div>
                     </div>
@@ -48,7 +53,7 @@
                     <div class="card">
                         <div class="card-body">
                             <h4 class="card-title">Numero identificacion</h4>
-                            <input type="number" class="form-control" name="txtidentificacion" id="txtidentificacion" placeholder="">                            
+                            <input type="number" class="form-control" name="txtidentificacion" id="txtidentificacion" style="text-transform: uppercase;" placeholder="">                            
                         </div>
                     </div>
                 </div>
@@ -59,7 +64,7 @@
                     <div class="card">
                         <div class="card-body">
                             <h4 class="card-title">Nombre</h4>
-                            <input type="text" class="form-control" name="txtnombre" id="txtnombre" placeholder="">
+                            <input type="text" class="form-control" name="txtnombre" id="txtnombre" style="text-transform: uppercase;" placeholder="">
                         </div>
                     </div>
                 </div>
@@ -71,7 +76,7 @@
                     <div class="card">
                         <div class="card-body">
                             <h4 class="card-title">Apellido</h4>
-                            <input type="text" class="form-control" name="txtapellido" id="txtapellido" placeholder="">                  
+                            <input type="text" class="form-control" name="txtapellido" id="txtapellido" style="text-transform: uppercase;" placeholder="">                  
                         </div>
                     </div>
                 </div>
@@ -88,7 +93,7 @@
                     <div class="card">
                         <div class="card-body">
                             <h4 class="card-title">Telefono</h4>
-                            <input type="tel" class="form-control" name="txttelefono" id="txttelefono" placeholder="">
+                            <input type="tel" class="form-control" name="txttelefono" id="txttelefono" style="text-transform: uppercase;" placeholder="">
                         </div>
                     </div>
                 </div>
@@ -100,7 +105,7 @@
                     <div class="card">
                         <div class="card-body">
                             <h4 class="card-title">Empresa</h4>
-                            <input type="text" class="form-control" name="txtempresa" id="txtempresa" placeholder="">
+                            <input type="text" class="form-control" name="txtempresa" id="txtempresa" style="text-transform: uppercase;" placeholder="">
                         </div>
                     </div>
                 </div>  
@@ -112,7 +117,7 @@
                     <div class="card">
                         <div class="card-body">
                             <h4 class="card-title">Cargo</h4>
-                            <input type="text" class="form-control" name="txtcargo" id="txtcargo" placeholder="">
+                            <input type="text" class="form-control" name="txtcargo" id="txtcargo" style="text-transform: uppercase;" placeholder="">
                         </div>
                     </div>
                 </div>
@@ -126,12 +131,12 @@
                             <h4 class="card-title">Ingresa vehiculo</h4>
 
                             <select id="ingresavehiculo" class="form-control me-2" name="txtingresavehiculo" id="txtingresavehiculo" value="Si" onclick="mostrarplaca()">
-                                <option value="">Seleccione...</option>
-                                <option value="1">Sí</option>
-                                <option value="0">No</option>
+                                <option value="">SELECCIONE...</option>
+                                <option value="1">SI</option>
+                                <option value="0">NO</option>
                             </select>
                             <br>
-                            <input id="placa" class="form-control" type="text" name="txtplaca" id="txtplaca" placeholder="Placa" style="max-width:150px;">
+                            <input id="placa" class="form-control" type="text" name="txtplaca" id="txtplaca" placeholder="Placa" style="text-transform: uppercase;" style="max-width:150px;">
                     </div>
                     </div>   
                 </div>        
@@ -146,7 +151,7 @@
                         <div class="card-body">
                             <h4 class="card-title">No. Tarjeta</h4>
                             <select class="form-control" name="txtnotarjeta" id="txtnotarjeta">
-                                <option value="">Seleccione...</option>
+                                <option value="">SELECCIONE...</option>
                                 <option value="1">1</option>
                                 <option value="2">2</option>
                                 <option value="3">3</option>
@@ -190,20 +195,20 @@
                         <div class="card-body">
                             <h4 class="card-title">Autoriza</h4>
                             <select class="form-control" name="txtautoriza" id="txtautoriza">
-                                <option value="">Seleccione...</option>
-                                <option value="gerencia">Gerencia</option>
-                                <option value="talentohumano">Talento Humano</option>
-                                <option value="comercial">Comercial</option>
-                                <option value="murillo">Jhon Freddy Murillo</option>
-                                <option value="anderson">Anderson Rodriguez</option>
-                                <option value="hector">Hector Diaz</option>
+                                <option value="">SELECCIONE...</option>
+                                <option value="GERENCIA">GERENCIA</option>
+                                <option value="TALENTOHUMANO">TALENTO HUMANO</option>
+                                <option value="COMERCIAL">COMERCIAL</option>
+                                <option value="MURILLO">JHON FREDDY MURILLO</option>
+                                <option value="ANDERSON">ANDERSON RODRIGUEZ</option>
+                                <option value="HECTOR">HECTOR DIAZ</option>
                             </select>
                             <h4 class="card-title">Motivo visita</h4>
                             <select class="form-control" name="txtmotivovisita" id="txtmotivovisita">
-                                <option value="">Seleccione...</option>
-                                <option value="VISITA">Visita</option>
-                                <option value="MANTENIMIENTO">Mantenimiento</option>
-                                <option value="REPARACION">Reparacion</option>
+                                <option value="">SELECCIONE...</option>
+                                <option value="VISITA">VISITA</option>
+                                <option value="MANTENIMIENTO">MANTENIMIENTO</option>
+                                <option value="REPARACION">REPARACION</option>
                             </select>
 
                             
@@ -235,7 +240,7 @@
 
                 <div class="col-md-3">
                         <div class="card-body d-flex flex-column justify-content-center align-items-center" style="height: 200px;">
-                            <button type="submit" name="accion" value="registrar" class="btn btn-primary btn-lg">
+                            <button type="submit" name="accion" value="registrar" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#modelId">
                                 REGISTRAR
                             </button>
                         </div>
@@ -310,7 +315,7 @@
     
         </div>
 
-</form>   
+    </form>   
 
 {% endblock %}
 

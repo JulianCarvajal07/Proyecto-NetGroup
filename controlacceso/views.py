@@ -14,6 +14,7 @@ from django.contrib.auth import authenticate, login  as auth_login
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator
+from django.contrib import messages
 
 
 
@@ -21,7 +22,6 @@ from django.core.paginator import Paginator
 
 COLOMBIA_TZ = pytz.timezone('America/Bogota')
 
-# Create your views here.
 
 #INGRESO DE PAGINA PRINCIPAL
 
@@ -51,48 +51,61 @@ def login_usuario(request):
 
 
 def preregistro(request):
-    
+
     if request.method == 'POST':
-        tipoidentificacion = request.POST['txttipoidentificacion']
-        identificacion = request.POST['txtidentificacion']
-        nombre = request.POST['txtnombre']
-        apellido = request.POST['txtapellido']
-        telefono = request.POST['txttelefono']
-        empresa = request.POST.get('txtempresa', '')
-        cargo = request.POST.get('txtcargo', '')
-        ingresavehiculo = 'txtingresavehiculo' in request.POST
-        placa = request.POST.get('txtplaca', '')
-        notarjeta = request.POST['txtnotarjeta']
-        autoriza = request.POST['txtautoriza']
-        motivovisita = request.POST.get('txtmotivovisita')
-        foto = request.POST.get('foto')
+        campos_obligatorios = [
+            'txttipoidentificacion',
+            'txtidentificacion',
+            'txtnombre',
+            'txtapellido',
+            'txttelefono',
+            'txtempresa',
+            'txtcargo',
+            'txtnotarjeta',
+            'txtautoriza',
+            'txtmotivovisita',
+            'foto',
+        ]
 
+        faltantes = [campo for campo in campos_obligatorios if not request.POST.get(campo)]
 
-        nueva_visita = visita(
-            tipoidentificacion=tipoidentificacion,
-            identificacion=identificacion,
-            nombre=nombre,
-            apellido=apellido,
-            telefono=telefono,
-            empresa=empresa,
-            cargo=cargo,
-            ingresavehiculo=ingresavehiculo,
-            placa=placa,
-            notarjeta=notarjeta,
-            autoriza=autoriza,
-            motivovisita=motivovisita,
-            foto=foto,
-        )
-        nueva_visita.save()
+        if faltantes:
+            messages.error(request, "ERROR, ALGUNOS CAMPOS SON OBLIGATORIOS")
 
-        # Aquí puedes agregar la lógica para manejar la foto y la firma si es necesario
+        else:
+            tipoidentificacion = request.POST['txttipoidentificacion']
+            identificacion = request.POST['txtidentificacion']
+            nombre = request.POST['txtnombre'].upper()
+            apellido = request.POST['txtapellido'].upper()
+            telefono = request.POST['txttelefono']
+            empresa = request.POST.get('txtempresa', '').upper()
+            cargo = request.POST.get('txtcargo', '').upper()
+            ingresavehiculo = 'txtingresavehiculo' in request.POST
+            placa = request.POST.get('txtplaca', '').upper()
+            notarjeta = request.POST['txtnotarjeta']
+            autoriza = request.POST['txtautoriza']
+            motivovisita = request.POST.get('txtmotivovisita')
+            foto = request.POST.get('foto')
 
-        
-        messages.success(request, 'Visita registrada exitosamente')
-        return redirect('preregistro')  # O redirige a una vista con nombre
+            nueva_visita = visita(
+                tipoidentificacion=tipoidentificacion,
+                identificacion=identificacion,
+                nombre=nombre,
+                apellido=apellido,
+                telefono=telefono,
+                empresa=empresa,
+                cargo=cargo,
+                ingresavehiculo=ingresavehiculo,
+                placa=placa,
+                notarjeta=notarjeta,
+                autoriza=autoriza,
+                motivovisita=motivovisita,
+                foto=foto,
+            )
+            nueva_visita.save()
+            messages.success(request, "Visita registrada correctamente.")
 
     return render(request, 'paginas/preregistro.html')
-
 
 
 #===========================================================================================================
@@ -114,13 +127,6 @@ def registronoc(request):
 
     return render(request, 'paginas/registronoc.html', {'visitantes': visitantenoc})
 
-
-#===========================================================================================================
-#def visitantes(request):
-    #visitantes = visita.objects.all().order_by('-id') # Ordenar por ID descendente
-    
-    
-    #return render(request, 'paginas/visitantes.html', {'visitantes': visitantes})
 
 #===========================================================================================================
 @login_required(login_url='/login/')
