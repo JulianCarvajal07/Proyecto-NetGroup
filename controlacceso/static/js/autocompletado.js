@@ -1,19 +1,28 @@
 document.getElementById('txtidentificacion').addEventListener('input', function(e) {
-    // Usamos 'input' en lugar de 'change' para mayor sensibilidad
     const identificacion = this.value.trim();
     
-    // Esperamos a que tenga una longitud mínima (ej: 4 caracteres)
-    if (identificacion.length >= 4) {
-        // Agregamos un pequeño delay para evitar múltiples peticiones
+    if (identificacion.length >= 5) {
         setTimeout(() => {
-            fetch(`/buscar-identificacion/?txtidentificacion=${encodeURIComponent(identificacion)}`)
+            console.log("ENVIANDO BUSQUEDA PARA:", identificacion);
+
+            fetch(`/buscar_por_identificacion/?txtidentificacion=${encodeURIComponent(identificacion)}`)
                 .then(response => {
-                    if (!response.ok) throw new Error('Error en la respuesta');
-                    return response.json();
+                    console.log("STATUS:", response.status);
+                    return response.text();
                 })
-                .then(data => {
+                .then(text => {
+                    console.log("RESPUESTA RAW:", text);
+
+                    let data;
+                    try {
+                        data = JSON.parse(text);
+                        console.log("RESPUESTA JSON:", data);
+                    } catch (e) {
+                        console.error("No es JSON válido:", e);
+                        return; // Salimos si no es JSON válido
+                    }
+
                     if (!data.error) {
-                        // Autocompletar campos
                         const fieldsToAutocomplete = {
                             'txttipoidentificacion': data.txttipoidentificacion,
                             'txtnombre': data.txtnombre,
@@ -21,28 +30,44 @@ document.getElementById('txtidentificacion').addEventListener('input', function(
                             'txttelefono': data.txttelefono,
                             'txtempresa': data.txtempresa,
                             'txtcargo': data.txtcargo,
+                            'txtingresavehiculo': data.txtingresavehiculo,
                             'txtplaca': data.txtplaca,
                             'txtnotarjeta': data.txtnotarjeta,
                             'txtautoriza': data.txtautoriza
                         };
-                        
-                        // Recorremos todos los campos
+
                         for (const [fieldId, value] of Object.entries(fieldsToAutocomplete)) {
                             const element = document.getElementById(fieldId);
                             if (element) {
                                 element.value = value || '';
                             }
                         }
-                        
-                        // Manejo especial para checkbox
-                        const vehicleCheckbox = document.getElementById('txtingresavehiculo');
-                        if (vehicleCheckbox) {
-                            vehicleCheckbox.checked = Boolean(data.txtingresavehiculo);
-                            document.getElementById('txtplaca').disabled = !data.txtingresavehiculo;
+
+                        const vehicleSelect = document.getElementById('txtingresavehiculo');
+                        if (vehicleSelect) {
+                            vehicleSelect.value = data.txtingresavehiculo ? "1" : "0";
+                            document.getElementById('txtplaca').disabled = vehicleSelect.value !== "1";
                         }
                     }
                 })
                 .catch(error => console.error('Error:', error));
-        }, 300); // Delay de 300ms
+        }, 300);
+    } else {
+        // Si está vacío o con pocos caracteres, limpiar campos
+        const fieldsToClear = [
+            'txttipoidentificacion', 'txtnombre', 'txtapellido', 'txttelefono',
+            'txtempresa', 'txtcargo', 'txtplaca', 'txtnotarjeta', 'txtautoriza'
+        ];
+
+        fieldsToClear.forEach(fieldId => {
+            const element = document.getElementById(fieldId);
+            if (element) element.value = '';
+        });
+
+        const vehicleSelect = document.getElementById('txtingresavehiculo');
+        if (vehicleSelect) {
+            vehicleSelect.value = "0";
+            document.getElementById('txtplaca').disabled = true;
+        }
     }
 });

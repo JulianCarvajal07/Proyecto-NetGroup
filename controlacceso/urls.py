@@ -10,7 +10,7 @@ urlpatterns = [
     path('guardar_firma/', views.guardar_firma, name='guardar_firma'),
     path('guardar_salida_noc/', views.guardar_salida_noc, name='guardar_salida_noc'),
     path('salida/', views.boton_salida, name='boton_salida'),
-    path('buscar-por-identificacion/', views.buscar_por_identificacion, name='buscar_por_identificacion'),
+    path('buscar_por_identificacion/', views.buscar_por_identificacion, name='buscar_por_identificacion'),
 ]
 
 
