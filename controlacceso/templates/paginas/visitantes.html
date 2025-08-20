@@ -70,7 +70,7 @@
             </tr>
         </thead>
             <tbody>
-            {% for visitante in visitantes %}
+            {% for visitante in page_obj %}
                 <tr>
                     <td>{{ visitante.tipoidentificacion }}</td>
                     <td>{{ visitante.identificacion }}</td>
@@ -165,13 +165,13 @@
 
         <div class="paginacion">
             {% if page_obj.has_previous %}
-                <a href="?page={{ page_obj.previous_page_number }}">Anterior</a>
+                <a href="?page={{ page_obj.previous_page_number }}"><button class="btn btn-primary">ANTERIOR</button></a>
             {% endif %}
 
             <span>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
 
             {% if page_obj.has_next %}
-                <a href="?page={{ page_obj.next_page_number }}">Siguiente</a>
+                <a href="?page={{ page_obj.next_page_number }}"> <button class="btn btn-primary">SIGUIENTE</button></a>
             {% endif %}
         </div>
 

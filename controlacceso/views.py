@@ -212,7 +212,7 @@ def visitantes(request):
 
     visitas = visita.objects.all()  # ✅ usamos el modelo correcto
 
-    paginator = Paginator(visitas, 5)  # ← Aquí se define siempre
+    paginator = Paginator(visitas, 10)  # ← Aquí se define siempre
 
     page_number = request.GET.get('page') or 1  # ← Por defecto, página 1
     page_obj = paginator.get_page(page_number)
