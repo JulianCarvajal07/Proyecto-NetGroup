@@ -166,13 +166,21 @@ def guardar_salida_noc(request):
         try:
             visitante = visita.objects.get(id=visitante_id)
             hora_salida = datetime.fromisoformat(hora_salida_str)
+
+
+            # VALIDACION LA HORA DE SALIDA NOC NO PUEDE SER MENOR HORA DE INGRESO
+            if hora_salida < visitante.horadeingresonoc:
+                messages.error(request, "⛔ LA HORA DE SALIDA DEL NOC NO PUEDE SER MENOR QUE LA HORA DE INGRESO") 
+                print("⛔ EL REGISTRO DE FECHA DE SALIDA DE NOC NO FUE GUARDADO")
+                return redirect ('registronoc')
+            
+
             visitante.horadesalidanoc = hora_salida
             visitante.motivovisita = motivo_visita  # Guardar el motivo de la visita
             visitante.save()
+            messages.success(request, "✅ REGISTRO NOC EXITOSO")
             print("✅ Hora de salida guardada correctamente.")
 
-
-            # return redirect('registronoc')  # Redirigir a la página de registro NOC
         
             # Determinar si el campo motivovisita está vacío o no
             deshabilitar_motivo = bool(visitante.motivovisita and visitante.motivovisita.strip())
@@ -185,8 +193,7 @@ def guardar_salida_noc(request):
 
         except Exception as e:
             return redirect('registronoc')
-         #   print("❌ Error al guardar la hora de salida:", e)
-          #  return HttpResponse("Error interno", status=500)
+
         
 #===========================================================================================================
 def boton_salida(request):
