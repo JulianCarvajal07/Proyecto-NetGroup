@@ -111,21 +111,7 @@ def preregistro(request):
 #===========================================================================================================
 
 def registronoc(request):
-
     
-    """visitantenoc = visita.objects.filter(
-        # Excluir si ya tiene todos los campos completos
-        ~(
-            Q(firma__isnull=False) &
-            Q(horadeingresonoc__isnull=False) &
-            Q(horadesalidanoc__isnull=False)
-        ),
-        # Excluir si ya tiene fecha de salida
-
-        fecha_salida__isnull=True
-
-    ).order_by('-id')"""
-
     visitantenoc = visita.objects.exclude(
             Q(firma__isnull=False) &
             Q(horadeingresonoc__isnull=False) &
@@ -133,10 +119,6 @@ def registronoc(request):
             |
             Q(fecha_salida__isnull=False)
     ).order_by('-id')
-
-
-
-  
 
     return render(request, 'paginas/registronoc.html', {'visitantes': visitantenoc})
 
@@ -178,6 +160,7 @@ def guardar_salida_noc(request):
 
         if not visitante_id or not hora_salida_str:
             print("⚠️ Datos incompletos:", visitante_id, hora_salida_str)
+            messages.error (request,"SE DEBE LLENAR TODOS LOS CAMPOS PARA REGISTRAR LA SALIDA DEL NOC")
             return redirect('registronoc')
 
         try:
