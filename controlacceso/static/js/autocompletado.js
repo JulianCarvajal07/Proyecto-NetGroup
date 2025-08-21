@@ -24,16 +24,15 @@ document.getElementById('txtidentificacion').addEventListener('input', function(
 
                     if (!data.error) {
                         const fieldsToAutocomplete = {
-                            //'txttipoidentificacion': data.txttipoidentificacion,
+                            
                             'txtnombre': data.txtnombre,
                             'txtapellido': data.txtapellido,
                             'txttelefono': data.txttelefono,
                             'txtempresa': data.txtempresa,
                             'txtcargo': data.txtcargo,
                             'txtingresavehiculo': data.txtingresavehiculo,
-                            'txtplaca': data.txtplaca,
-                            //'txtnotarjeta': data.txtnotarjeta,
-                            //'txtautoriza': data.txtautoriza
+                            'txtplaca': data.txtplaca,                            
+
                         };
 
                         for (const [fieldId, value] of Object.entries(fieldsToAutocomplete)) {
