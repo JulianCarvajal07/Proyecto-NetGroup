@@ -4,7 +4,6 @@ from django.core.files.base import ContentFile
 from django.contrib import messages
 from .models import Usuarios, visita
 from django.utils import timezone
-from django.http import HttpResponse
 from django.db.models import Q
 import pytz
 from datetime import datetime
@@ -15,6 +14,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator
 from django.contrib import messages
+from django.http import HttpResponseForbidden
 
 
 
@@ -212,7 +212,7 @@ def visitantes(request):
     desde = request.GET.get('desde')
     hasta = request.GET.get('hasta')
 
-    visitas = visita.objects.all()  # ✅ usamos el modelo correcto
+    visitas = visita.objects.all().order_by('-fecha_ingreso')  # ✅ usamos el modelo correcto
 
     # 🔍 Búsqueda general
     if query:
@@ -296,15 +296,18 @@ def buscar_por_identificacion(request):
     return JsonResponse({'error': 'Solicitud inválida'}, status=400)
 #============================================================================================================
 def modificar_visitante (request):
+
+    # Solo permitir a usuarios con rol 'admin'
+    
     if request.method == 'POST':
         visitante_id= request.POST.get("visitante_id")
         visitante= get_object_or_404(visita, id=visitante_id)
 
         #ACTUALIZAR SOLO LOS CAMPOS QUE VIENEN EN EL FORMULARIO
-        visitante.identificacion = request.POST.get("txtidentificacion").upper()
+        visitante.identificacion = request.POST.get("txtidentificacion")
         visitante.nombre = request.POST.get ("txtnombre").upper()
         visitante.apellido = request.POST.get ("txtapellido").upper()
-        visitante.telefono = request.POST.get ("txttelefono").upper()
+        visitante.telefono = request.POST.get ("txttelefono")
 
         visitante.save() # GUARDAR EN LA BASE DE DATOS MYSQL LOS CAMBIOS
 
