@@ -214,14 +214,9 @@ def visitantes(request):
 
     visitas = visita.objects.all()  # ✅ usamos el modelo correcto
 
-    paginator = Paginator(visitas, 10)  # ← Aquí se define siempre
-
-    page_number = request.GET.get('page') or 1  # ← Por defecto, página 1
-    page_obj = paginator.get_page(page_number)
-
-
     # 🔍 Búsqueda general
     if query:
+        print("INGRESO AL CONDICIONAL DE BUSQUEDA EN GENERAL")
         visitas = visitas.filter(
             Q(nombre__icontains=query) |
             Q(apellido__icontains=query) |
@@ -234,19 +229,27 @@ def visitantes(request):
             Q(motivovisita__icontains=query)
         )
 
-    # 📅 Filtro por fecha
+# 📅 Filtro por fecha (tener presente que las fechas arrojan tambien la hora por ende se coloca gte y lte)
     if desde:
-        visitas = visitas.filter(fecha_ingreso__gte=desde)
-    if hasta:
-        visitas = visitas.filter(fecha_ingreso__lte=hasta)
+        visitas = visitas.filter(fecha_ingreso__date__gte=desde) #gte mayor igual que 
+    if hasta: 
+        visitas = visitas.filter(fecha_ingreso__date__lte=hasta) #lte es menor igual que
 
-    # ✅ Filtros dinámicos por campo
+
+
+
+    #✅ Filtros dinámicos por campo
     campos_dinamicos = ['autoriza', 'telefono', 'empresa', 'cargo']
     for campo in campos_dinamicos:
         valor = request.GET.get(f'filtro_{campo}')
         if valor:
             filtro = {f"{campo}__icontains": valor}
             visitas = visitas.filter(**filtro)
+
+    # Paginación 
+    paginator = Paginator(visitas, 10)  # ← Aquí se define siempre
+    page_number = request.GET.get('page') or 1  # ← Por defecto, página 1
+    page_obj = paginator.get_page(page_number)
 
     context = {
         'visitantes': visitas,
@@ -285,8 +288,6 @@ def buscar_por_identificacion(request):
                 'txtcargo': ultimo_visitante.cargo,
                 'txtingresavehiculo': ultimo_visitante.ingresavehiculo,
                 'txtplaca': ultimo_visitante.placa if ultimo_visitante.ingresavehiculo else '',
-                #'txtnotarjeta': ultimo_visitante.notarjeta,
-                #'txtautoriza': ultimo_visitante.autoriza,
             }
             
             return JsonResponse(response_data)
