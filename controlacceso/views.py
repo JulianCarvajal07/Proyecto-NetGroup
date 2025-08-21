@@ -111,7 +111,9 @@ def preregistro(request):
 #===========================================================================================================
 
 def registronoc(request):
-    visitantenoc = visita.objects.filter(
+
+    
+    """visitantenoc = visita.objects.filter(
         # Excluir si ya tiene todos los campos completos
         ~(
             Q(firma__isnull=False) &
@@ -122,7 +124,18 @@ def registronoc(request):
 
         fecha_salida__isnull=True
 
+    ).order_by('-id')"""
+
+    visitantenoc = visita.objects.exclude(
+            Q(firma__isnull=False) &
+            Q(horadeingresonoc__isnull=False) &
+            Q(horadesalidanoc__isnull=False)
+            |
+            Q(fecha_salida__isnull=False)
     ).order_by('-id')
+
+
+
   
 
     return render(request, 'paginas/registronoc.html', {'visitantes': visitantenoc})
