@@ -281,7 +281,7 @@ def buscar_por_identificacion(request):
             ultimo_visitante = visitantes.latest('fecha_ingreso')  # Asegúrate de tener este campo
             
             response_data = {
-                'txttipoidentificacion': ultimo_visitante.tipoidentificacion,
+                #'txttipoidentificacion': ultimo_visitante.tipoidentificacion,
                 'txtnombre': ultimo_visitante.nombre,
                 'txtapellido': ultimo_visitante.apellido,
                 'txttelefono': ultimo_visitante.telefono,
@@ -289,8 +289,8 @@ def buscar_por_identificacion(request):
                 'txtcargo': ultimo_visitante.cargo,
                 'txtingresavehiculo': ultimo_visitante.ingresavehiculo,
                 'txtplaca': ultimo_visitante.placa if ultimo_visitante.ingresavehiculo else '',
-                'txtnotarjeta': ultimo_visitante.notarjeta,
-                'txtautoriza': ultimo_visitante.autoriza,
+                #'txtnotarjeta': ultimo_visitante.notarjeta,
+                #'txtautoriza': ultimo_visitante.autoriza,
             }
             
             return JsonResponse(response_data)

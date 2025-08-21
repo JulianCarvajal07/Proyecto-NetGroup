@@ -24,7 +24,7 @@ document.getElementById('txtidentificacion').addEventListener('input', function(
 
                     if (!data.error) {
                         const fieldsToAutocomplete = {
-                            'txttipoidentificacion': data.txttipoidentificacion,
+                            //'txttipoidentificacion': data.txttipoidentificacion,
                             'txtnombre': data.txtnombre,
                             'txtapellido': data.txtapellido,
                             'txttelefono': data.txttelefono,
@@ -32,8 +32,8 @@ document.getElementById('txtidentificacion').addEventListener('input', function(
                             'txtcargo': data.txtcargo,
                             'txtingresavehiculo': data.txtingresavehiculo,
                             'txtplaca': data.txtplaca,
-                            'txtnotarjeta': data.txtnotarjeta,
-                            'txtautoriza': data.txtautoriza
+                            //'txtnotarjeta': data.txtnotarjeta,
+                            //'txtautoriza': data.txtautoriza
                         };
 
                         for (const [fieldId, value] of Object.entries(fieldsToAutocomplete)) {
@@ -55,8 +55,8 @@ document.getElementById('txtidentificacion').addEventListener('input', function(
     } else {
         // Si está vacío o con pocos caracteres, limpiar campos
         const fieldsToClear = [
-            'txttipoidentificacion', 'txtnombre', 'txtapellido', 'txttelefono',
-            'txtempresa', 'txtcargo', 'txtplaca', 'txtnotarjeta', 'txtautoriza'
+            'txtnombre', 'txtapellido', 'txttelefono',
+            'txtempresa', 'txtcargo', 'txtplaca'
         ];
 
         fieldsToClear.forEach(fieldId => {
