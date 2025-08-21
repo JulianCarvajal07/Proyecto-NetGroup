@@ -2,9 +2,10 @@
 
 {% block titulo %}🧍VISITANTES {% endblock %} 
 
-{% block contenido %}
+{% load static %}
 
-        {% load static %}
+{% block contenido %}
+      
 
                         <!-- Filtros avanzados -->
                         <div class="card mb-4">
@@ -45,9 +46,6 @@
                             </form>
                         </div>
                         </div>
-
-        {% load static %}
-<script src="{% static 'js/filtros.js' %}"></script>
 
 <!--================================================================================================================-->
 
@@ -108,11 +106,15 @@
                     
                     <td>
                         <button type="button"  
-                                class="btn-primary"
-                                id="boton_modificar{{ visitante.id }}" 
+                                class="btn btn-primary"
                                 data-bs-toggle="modal"
                                 data-bs-target="#modal_modificar"
-                                data-id="{{ visitante.id }}">
+                                data-id="{{ visitante.id }}"
+                                data-identificacion="{{ visitante.identificacion }}"
+                                data-nombre= "{{ visitante.nombre }}"
+                                data-apellido="{{ visitante.apellido }}"
+                                data-telefono="{{ visitante.telefono }}">
+                                
                                 MODIFICAR
                         </button> 
         
@@ -134,16 +136,16 @@
                                         
                                             <div class="modal-body">
                                                 <h6 class="card-title">NUMERO DE IDENTIFICACION</h6>
-                                                    <input type="number" class="form-control" name="txtidentificacion" placeholder="{{ visitante.identificacion }}">
+                                                    <input type="number" class="form-control" name="txtidentificacion">
                                                 <h6 class="card-title">NOMBRE</h6>
-                                                    <input type="text" class="form-control" name="txtnombre" placeholder="{{ visitante.nombre }}">
+                                                    <input type="text" class="form-control" name="txtnombre">
                                                 <h6 class="card-title">APELLIDO</h6>
-                                                    <input type="text" class="form-control" name="txtapellido" placeholder="{{ visitante.apellido }}">  
+                                                    <input type="text" class="form-control" name="txtapellido">  
                                                 <h6 class="card-title">TELEFONO</h6>
-                                                    <input type="tel" class="form-control" name="txttelefono" placeholder="{{ visitante.telefono }}">
+                                                    <input type="tel" class="form-control" name="txttelefono">
 
-                                                <input type="hidden" name="modificar" id="modificarinput">
-                                                <input type="hidden" name="visitante_id" id="modificarinputID" value="{{ visitante.identificacion }}">
+                                                    <input type="hidden" name="visitante_id">
+
                                             </div>
                                             
                                                 
@@ -179,3 +181,5 @@
 </div>
 
 {% endblock %}
+
+

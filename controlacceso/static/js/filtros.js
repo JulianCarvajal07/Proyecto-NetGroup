@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
+
+  console.log("INGRESO A LA FUNCION FILTROS")
   const filtrosActivos = document.getElementById('filtros-activos');
   const form = document.getElementById('filtro-form');
 
@@ -7,6 +9,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const valor = document.getElementById('campo-valor').value;
 
     if (!campo || !valor) return;
+
+    console.log("SEGUNDO LOG PARA VERIFICAR")
 
     // Crear input oculto
     const input = document.createElement('input');
@@ -36,4 +40,5 @@ document.addEventListener('DOMContentLoaded', function () {
     // Limpiar campo de valor
     document.getElementById('campo-valor').value = '';
   };
+
 });
