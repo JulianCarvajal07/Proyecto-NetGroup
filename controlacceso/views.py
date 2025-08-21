@@ -236,8 +236,6 @@ def visitantes(request):
         visitas = visitas.filter(fecha_ingreso__date__lte=hasta) #lte es menor igual que
 
 
-
-
     #✅ Filtros dinámicos por campo
     campos_dinamicos = ['autoriza', 'telefono', 'empresa', 'cargo']
     for campo in campos_dinamicos:
@@ -296,7 +294,21 @@ def buscar_por_identificacion(request):
             return JsonResponse({'error': f'Error en el servidor: {str(e)}'}, status=500)
     
     return JsonResponse({'error': 'Solicitud inválida'}, status=400)
+#============================================================================================================
+def modificar_visitante (request):
+    if request.method == 'POST':
+        visitante_id= request.POST.get("visitante_id")
+        visitante= get_object_or_404(visita, id=visitante_id)
 
+        #ACTUALIZAR SOLO LOS CAMPOS QUE VIENEN EN EL FORMULARIO
+        visitante.identificacion = request.POST.get("txtidentificacion").upper()
+        visitante.nombre = request.POST.get ("txtnombre").upper()
+        visitante.apellido = request.POST.get ("txtapellido").upper()
+        visitante.telefono = request.POST.get ("txttelefono").upper()
+
+        visitante.save() # GUARDAR EN LA BASE DE DATOS MYSQL LOS CAMBIOS
+
+    return redirect ('visitantes') # REDIRIGE A LA VISTA VISITANTES
 
 
 

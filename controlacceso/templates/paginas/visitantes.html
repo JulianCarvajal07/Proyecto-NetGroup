@@ -123,7 +123,7 @@
 
 
                     <!--MODAL PARA MODIFICAR DATOS DEL USUARIO-->
-                        <form method="POST" action="">
+                        <form method="POST" action="{% url 'modificar_visitante' %}">
                             {% csrf_token %}
                             <div class="modal fade" id="modal_modificar" tabindex="-1" aria-labelledby="modalmodificarlabel" aria-hidden="true">
                                 <div class="modal-dialog">
@@ -138,9 +138,9 @@
                                                 <h6 class="card-title">NUMERO DE IDENTIFICACION</h6>
                                                     <input type="number" class="form-control" name="txtidentificacion">
                                                 <h6 class="card-title">NOMBRE</h6>
-                                                    <input type="text" class="form-control" name="txtnombre">
+                                                    <input type="text" class="form-control" name="txtnombre" style="text-transform: uppercase;">
                                                 <h6 class="card-title">APELLIDO</h6>
-                                                    <input type="text" class="form-control" name="txtapellido">  
+                                                    <input type="text" class="form-control" name="txtapellido" style="text-transform: uppercase;">  
                                                 <h6 class="card-title">TELEFONO</h6>
                                                     <input type="tel" class="form-control" name="txttelefono">
 
