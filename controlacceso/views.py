@@ -381,6 +381,8 @@ def visitantes(request):
         'desde': desde,
         'hasta': hasta,
         'page_obj': page_obj,
+        'MEDIA_URL': settings.MEDIA_URL
+
     }
 
     return render(request, 'paginas/visitantes.html', context)
