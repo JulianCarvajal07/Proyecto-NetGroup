@@ -238,6 +238,31 @@ def guardar_firma(request):
         visitante.usuario_noc = request.user.nombre # Guardar el nombre del usuario que registro la firma del visitante
 
         visitante.save()
+                
+        identificacion = visitante.identificacion
+                
+        try:
+            # Si viene con el encabezado "data:image/png;base64,...", quitarlo
+            if "," in firma_base64:
+                firma_base64 = firma_base64.split(",")[1]
+
+            imagen_bytes = base64.b64decode(firma_base64)
+
+            # Carpeta donde guardar (dentro de MEDIA_ROOT)
+            carpeta_firmas = os.path.join(settings.MEDIA_ROOT, "firma")
+            os.makedirs(carpeta_firmas, exist_ok=True)
+            # Nombre del archivo = identificacion.png
+            ruta_archivo = os.path.join(carpeta_firmas, f"{identificacion}.png")
+
+            with open(ruta_archivo, "wb") as f:
+                f.write(imagen_bytes)
+
+        except Exception as e:
+            print(f"Error guardando imagen PNG: {e}")
+
+        messages.success(request, "Visita registrada correctamente.")
+
+
         print("✅ Firma guardada correctamente.")
         print("Ingeniero que lo ingreso:", visitante.usuario_noc)  # Debería mostrar el nombre del usuario logueado
 
