@@ -50,72 +50,6 @@ def login_usuario(request):
     return render(request, 'login.html')
 
 #==========================================================================================================
-
-
-def preregistro(request):
-
-    if request.method == 'POST':
-        campos_obligatorios = [
-            'txttipoidentificacion',
-            'txtidentificacion',
-            'txtnombre',
-            'txtapellido',
-            'txttelefono',
-            'txtempresa',
-            'txtcargo',
-            'txtnotarjeta',
-            'txtautoriza',
-            'txtmotivovisita',
-            'foto',
-        ]
-
-        faltantes = [campo for campo in campos_obligatorios if not request.POST.get(campo)]
-
-
-        if faltantes:
-            messages.error(request, "⛔ ERROR, ALGUNOS CAMPOS SON OBLIGATORIOS")
-
-        else:
-            tipoidentificacion = request.POST['txttipoidentificacion']
-            identificacion = request.POST['txtidentificacion']
-            nombre = request.POST['txtnombre'].upper()
-            apellido = request.POST['txtapellido'].upper()
-            telefono = request.POST['txttelefono']
-            empresa = request.POST.get('txtempresa', '').upper()
-            cargo = request.POST.get('txtcargo', '').upper()
-            ingresavehiculo = request.POST.get('txtingresavehiculo', '0')
-            placa = request.POST.get('txtplaca', '').upper()
-            notarjeta = request.POST['txtnotarjeta']
-            autoriza = request.POST['txtautoriza']
-            motivovisita = request.POST.get('txtmotivovisita')
-            foto = request.POST.get('foto')
-
-            if ingresavehiculo == '1' and not placa.strip():
-                messages.error(request, "⛔ FALTO INGRESAR LA PLACA DEL VEHÍCULO") 
-                return redirect('preregistro')
-
-            nueva_visita = visita(
-                tipoidentificacion=tipoidentificacion,
-                identificacion=identificacion,
-                nombre=nombre,
-                apellido=apellido,
-                telefono=telefono,
-                empresa=empresa,
-                cargo=cargo,
-                ingresavehiculo=ingresavehiculo,
-                placa=placa,
-                notarjeta=notarjeta,
-                autoriza=autoriza,
-                motivovisita=motivovisita,
-                foto=foto,
-            )
-            nueva_visita.save()
-            messages.success(request, "Visita registrada correctamente.")
-
-            import base64
-import os
-from django.conf import settings
-
 def preregistro(request):
 
     if request.method == 'POST':
@@ -155,9 +89,13 @@ def preregistro(request):
             if ingresavehiculo == '1' and not placa.strip():
                 messages.error(request, "⛔ FALTO INGRESAR LA PLACA DEL VEHÍCULO") 
                 return redirect('preregistro')
+            
+
+
+
 
             # 1. Guardar la visita en la BD (incluye foto en Base64)
-            nueva_visita = visita(
+            visitante = visita(
                 tipoidentificacion=tipoidentificacion,
                 identificacion=identificacion,
                 nombre=nombre,
@@ -171,12 +109,18 @@ def preregistro(request):
                 autoriza=autoriza,
                 motivovisita=motivovisita,
                 foto=foto,
+                
             )
-            nueva_visita.save()
+            visitante.save()
 
-            # 2. Guardar la foto como archivo PNG
+            # Guardar la foto como archivo PNG
             if foto:
+
                 try:
+
+                    # nueva_visita.fecha_ingreso es un datetime real
+                    timestamp_str = visitante.fecha_ingreso.strftime("%Y%m%d_%H%M%S")
+
                     # Si viene con el encabezado "data:image/png;base64,...", quitarlo
                     if "," in foto:
                         foto = foto.split(",")[1]
@@ -187,11 +131,17 @@ def preregistro(request):
                     carpeta_fotos = os.path.join(settings.MEDIA_ROOT, "fotos")
                     os.makedirs(carpeta_fotos, exist_ok=True)
 
-                    # Nombre del archivo = identificacion.png
-                    ruta_archivo = os.path.join(carpeta_fotos, f"{identificacion}.png")
+                    # Nombre seguro del archivo (solo el nombre, sin ruta completa)
+                    nombre_archivo_foto = f"{visitante.identificacion}_{timestamp_str}.png"
 
+                    # Ruta completa para guardar el archivo físicamente
+                    ruta_archivo = os.path.join(carpeta_fotos, nombre_archivo_foto)
+                    
                     with open(ruta_archivo, "wb") as f:
-                        f.write(imagen_bytes)
+                        f.write(imagen_bytes)   
+
+                    visitante.nombre_archivo_foto = nombre_archivo_foto                     
+                    visitante.save()
 
                 except Exception as e:
                     print(f"Error guardando imagen PNG: {e}")
@@ -229,7 +179,7 @@ def guardar_firma(request):
         print("Visitante ID:", visitante_id)
                
         if not firma_base64 or not visitante_id:
-            #Puedes manejar el error aquí si falta algo
+            #se puede colocar un mensaje de error en esta parte para depurar (no es necesario)
             return redirect('registronoc')  # o mostrar un mensaje
 
         visitante = visita.objects.get(id=visitante_id)
@@ -240,6 +190,9 @@ def guardar_firma(request):
         visitante.save()
                 
         identificacion = visitante.identificacion
+
+        # nueva_visita.fecha_ingreso es un datetime real
+        timestamp_str = visitante.fecha_ingreso.strftime("%Y%m%d_%H%M%S")
                 
         try:
             # Si viene con el encabezado "data:image/png;base64,...", quitarlo
@@ -251,16 +204,24 @@ def guardar_firma(request):
             # Carpeta donde guardar (dentro de MEDIA_ROOT)
             carpeta_firmas = os.path.join(settings.MEDIA_ROOT, "firma")
             os.makedirs(carpeta_firmas, exist_ok=True)
-            # Nombre del archivo = identificacion.png
-            ruta_archivo = os.path.join(carpeta_firmas, f"{identificacion}.png")
+
+            # Nombre seguro del archivo (solo el nombre)
+            nombre_archivo_firma = f"{identificacion}_{timestamp_str}.png"
+
+            #Ruta completa para guardar fisicamente el archivo
+            ruta_archivo = os.path.join(carpeta_firmas, nombre_archivo_firma)
 
             with open(ruta_archivo, "wb") as f:
                 f.write(imagen_bytes)
 
+            # Guardar solo el nombre del archivo en la base de datos
+            visitante.nombre_archivo_firma = nombre_archivo_firma
+            visitante.save()
+
         except Exception as e:
             print(f"Error guardando imagen PNG: {e}")
 
-        messages.success(request, "Visita registrada correctamente.")
+        messages.success(request, "FIRMA REGISTRADA CORRECTAMENTE.")
 
 
         print("✅ Firma guardada correctamente.")

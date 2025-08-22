@@ -73,6 +73,8 @@ class visita (models.Model):
     horadeingresonoc = models.DateTimeField(null=True, blank=True)
     horadesalidanoc = models.DateTimeField(null=True, blank=True)
     motivovisita = models.CharField(max_length=255)
+    nombre_archivo_foto = models.CharField(max_length=100, null=True, blank=True)
+    nombre_archivo_firma = models.CharField(max_length=100, null=True, blank=True)
 
 
 

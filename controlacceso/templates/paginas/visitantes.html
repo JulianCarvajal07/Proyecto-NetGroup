@@ -108,7 +108,7 @@
 
                     <td>
                         {% if visitante.foto %}
-                            <img src="{{ MEDIA_URL }}fotos/{{ visitante.identificacion }}.png"
+                            <img src="{{ MEDIA_URL }}fotos/{{ visitante.nombre_archivo_foto }}"
                                  width="100"
                                  alt="Foto"
                                  style="cursor: pointer;" 
@@ -121,7 +121,12 @@
 
                     <td>
                         {% if visitante.firma %}
-                            <img src="{{ visitante.firma }}" width="100">
+                                <img src="{{ MEDIA_URL }}firma/{{ visitante.nombre_archivo_firma }}" 
+                                     width="100" 
+                                     alt="firma"
+                                     style="cursor:pointer;" 
+                                     onclick="mostrarImagen(this.src)"
+                                >
                         {% else %}
                             ⏳ SIN FIRMA
                         {% endif %}
@@ -152,7 +157,7 @@
                         z-index:9999; 
                         left:0; top:0; 
                         width:100%; height:100%; 
-                        background:rgba(0,0,0,0.8);
+                        background:rgba(255, 255, 255, 0.8);
                         justify-content:center; 
                         align-items:center;
                     ">
@@ -161,7 +166,7 @@
                             top:20px; 
                             right:40px; 
                             font-size:40px; 
-                            color:white; 
+                            color:rgb(0, 0, 0); 
                             cursor:pointer;" 
                             onclick="cerrarModal()">&times;</span>
                         <img id="imagenGrande" src="" style="max-width:80%; max-height:80%;">
