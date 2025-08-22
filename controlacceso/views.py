@@ -15,6 +15,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator
 from django.contrib import messages
 from django.http import HttpResponseForbidden
+from django.conf import settings
+import os
 
 
 
@@ -69,8 +71,9 @@ def preregistro(request):
 
         faltantes = [campo for campo in campos_obligatorios if not request.POST.get(campo)]
 
+
         if faltantes:
-            messages.error(request, "ERROR, ALGUNOS CAMPOS SON OBLIGATORIOS")
+            messages.error(request, "⛔ ERROR, ALGUNOS CAMPOS SON OBLIGATORIOS")
 
         else:
             tipoidentificacion = request.POST['txttipoidentificacion']
@@ -80,12 +83,16 @@ def preregistro(request):
             telefono = request.POST['txttelefono']
             empresa = request.POST.get('txtempresa', '').upper()
             cargo = request.POST.get('txtcargo', '').upper()
-            ingresavehiculo = 'txtingresavehiculo' in request.POST
+            ingresavehiculo = request.POST.get('txtingresavehiculo', '0')
             placa = request.POST.get('txtplaca', '').upper()
             notarjeta = request.POST['txtnotarjeta']
             autoriza = request.POST['txtautoriza']
             motivovisita = request.POST.get('txtmotivovisita')
             foto = request.POST.get('foto')
+
+            if ingresavehiculo == '1' and not placa.strip():
+                messages.error(request, "⛔ FALTO INGRESAR LA PLACA DEL VEHÍCULO") 
+                return redirect('preregistro')
 
             nueva_visita = visita(
                 tipoidentificacion=tipoidentificacion,
@@ -104,6 +111,93 @@ def preregistro(request):
             )
             nueva_visita.save()
             messages.success(request, "Visita registrada correctamente.")
+
+            import base64
+import os
+from django.conf import settings
+
+def preregistro(request):
+
+    if request.method == 'POST':
+        campos_obligatorios = [
+            'txttipoidentificacion',
+            'txtidentificacion',
+            'txtnombre',
+            'txtapellido',
+            'txttelefono',
+            'txtempresa',
+            'txtcargo',
+            'txtnotarjeta',
+            'txtautoriza',
+            'txtmotivovisita',
+            'foto',
+        ]
+
+        faltantes = [campo for campo in campos_obligatorios if not request.POST.get(campo)]
+
+        if faltantes:
+            messages.error(request, "⛔ ERROR, ALGUNOS CAMPOS SON OBLIGATORIOS")
+        else:
+            tipoidentificacion = request.POST['txttipoidentificacion']
+            identificacion = request.POST['txtidentificacion']
+            nombre = request.POST['txtnombre'].upper()
+            apellido = request.POST['txtapellido'].upper()
+            telefono = request.POST['txttelefono']
+            empresa = request.POST.get('txtempresa', '').upper()
+            cargo = request.POST.get('txtcargo', '').upper()
+            ingresavehiculo = request.POST.get('txtingresavehiculo', '0')
+            placa = request.POST.get('txtplaca', '').upper()
+            notarjeta = request.POST['txtnotarjeta']
+            autoriza = request.POST['txtautoriza']
+            motivovisita = request.POST.get('txtmotivovisita')
+            foto = request.POST.get('foto')  # Base64
+
+            if ingresavehiculo == '1' and not placa.strip():
+                messages.error(request, "⛔ FALTO INGRESAR LA PLACA DEL VEHÍCULO") 
+                return redirect('preregistro')
+
+            # 1. Guardar la visita en la BD (incluye foto en Base64)
+            nueva_visita = visita(
+                tipoidentificacion=tipoidentificacion,
+                identificacion=identificacion,
+                nombre=nombre,
+                apellido=apellido,
+                telefono=telefono,
+                empresa=empresa,
+                cargo=cargo,
+                ingresavehiculo=ingresavehiculo,
+                placa=placa,
+                notarjeta=notarjeta,
+                autoriza=autoriza,
+                motivovisita=motivovisita,
+                foto=foto,
+            )
+            nueva_visita.save()
+
+            # 2. Guardar la foto como archivo PNG
+            if foto:
+                try:
+                    # Si viene con el encabezado "data:image/png;base64,...", quitarlo
+                    if "," in foto:
+                        foto = foto.split(",")[1]
+
+                    imagen_bytes = base64.b64decode(foto)
+
+                    # Carpeta donde guardar (dentro de MEDIA_ROOT)
+                    carpeta_fotos = os.path.join(settings.MEDIA_ROOT, "fotos")
+                    os.makedirs(carpeta_fotos, exist_ok=True)
+
+                    # Nombre del archivo = identificacion.png
+                    ruta_archivo = os.path.join(carpeta_fotos, f"{identificacion}.png")
+
+                    with open(ruta_archivo, "wb") as f:
+                        f.write(imagen_bytes)
+
+                except Exception as e:
+                    print(f"Error guardando imagen PNG: {e}")
+
+            messages.success(request, "Visita registrada correctamente.")
+
 
     return render(request, 'paginas/preregistro.html')
 

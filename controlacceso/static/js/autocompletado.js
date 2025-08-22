@@ -42,6 +42,14 @@ document.getElementById('txtidentificacion').addEventListener('input', function(
                             }
                         }
 
+                        /*const vehicleSelect = document.getElementById('txtingresavehiculo');
+                        if (vehicleSelect) {
+                            const esVehiculo = (data.txtingresavehiculo === 1 || data.txtingresavehiculo === "1");
+                            vehicleSelect.value = esVehiculo ? "1" : "0";
+                            document.getElementById('txtplaca').disabled = !esVehiculo;
+                        }*/
+
+
                         const vehicleSelect = document.getElementById('txtingresavehiculo');
                         if (vehicleSelect) {
                             vehicleSelect.value = data.txtingresavehiculo ? "1" : "0";

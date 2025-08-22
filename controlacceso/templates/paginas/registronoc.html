@@ -94,7 +94,7 @@
 
 
             <td>
-                <button type="submit">☑️</button>  
+                 <button type="submit" class="btn btn-purple btn-sm p-1 rounded">☑️</button>
             </td>
         </form>
 
@@ -107,24 +107,25 @@
                 <form action="{% url 'guardar_firma' %}" method="POST">
                     {% csrf_token %}
                     <div class="modal fade" id="modalfirma" tabindex="-1" aria-labelledby="modalfirmalabel" aria-hidden="true">
-                        <div class="modal-dialog">
+                        <div class="modal-dialog modal-xl modal-adaptable">
                             <div class="modal-content">
 
-                                    <div class="modal-header">
-                                         <h5 class="modal-title" id="modalfirmalabel">✍️ INGRESE FIRMA DEL VISITANTE</h5>
+                                    <div class="modal-header text-center">
+                                         <h5 class="modal-title w-100" id="modalfirmalabel">✍️ INGRESE FIRMA DEL VISITANTE</h5>
                                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="cerrar"></button>
                                     </div>
                                 
                                     <div class="modal-body">
-                                        <canvas id="canvasfirma" width="300" height="150" style="border:1px solid #000;"></canvas>
+                                        <canvas id="canvasfirma" width="1100" height="600"></canvas>
+                                        <!--<canvas id="canvasfirma" width="1100" height="600" style="border:1px solid #000;"></canvas>-->
                                         <input type="hidden" name="firma" id="firmainput">
                                         <input type="hidden" name="visitante_id" id="firmainputID" value="">
                                     </div>
                                     
                                         
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">❌ Cancelar</button>     
-                                        <button type="submit" class="btn btn-success"  onclick="return guardarfirma()">✅ Guardar Firma</button>
+                                    <div class="modal-footer justify-content-center">
+                                        <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">❌ Cancelar</button>     
+                                        <button type="submit" class="btn btn-success btn-lg"  onclick="return guardarfirma()">✅ Guardar Firma</button>
                                     </div>
                             </div>
                         </div>

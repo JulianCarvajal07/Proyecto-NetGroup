@@ -1,0 +1,33 @@
+/* Modal adaptable al contenido */
+.modal-adaptable {
+    max-width: 95%; /* Usa casi todo el ancho de la ventana */
+    width: auto;    /* Ajusta al contenido */
+}
+
+.modal-body {
+    overflow-x: auto; /* Scroll horizontal si es necesario */
+    text-align: center; /* Centra el canvas */
+
+    
+}
+
+/* Canvas adaptable */
+.modal-body canvas {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid black;
+    background: white;
+    border-radius: 10px; 
+}
+
+
+.btn-purple {
+    background-color: #dcdcdc; /* Morado Bootstrap-ish */
+    color: rgb(255, 255, 255);
+    border: none;
+}
+.btn-purple:hover {
+    background-color: #efefef; /* Morado más oscuro en hover */
+    color: white;
+}
+
