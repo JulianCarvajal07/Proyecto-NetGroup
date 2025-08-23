@@ -147,13 +147,13 @@ def preregistro(request):
                     print(f"Error guardando imagen PNG: {e}")
 
                 
-                # Crear registro de auditoría
+                # Crear registro de auditoría para creacion de registro de visitante
                 Auditoria.objects.create(
                 usuario=request.user if request.user.is_authenticated else None,
                 visita=visitante,
                 accion="CREACIÓN",
                 detalles=f"El usuario {request.user.nombre} registró al visitante {visitante.nombre} {visitante.apellido}"
-        )
+                )
 
             messages.success(request, "Visita registrada correctamente.")
 
@@ -401,20 +401,71 @@ def modificar_visitante (request):
         visitante_id= request.POST.get("visitante_id")
         visitante= get_object_or_404(visita, id=visitante_id)
 
+        # Guardar copia original para comparar
+        visitante_original = visita.objects.get(pk=visitante.pk)
+
         #ACTUALIZAR SOLO LOS CAMPOS QUE VIENEN EN EL FORMULARIO
         visitante.identificacion = request.POST.get("txtidentificacion")
         visitante.nombre = request.POST.get ("txtnombre").upper()
         visitante.apellido = request.POST.get ("txtapellido").upper()
         visitante.telefono = request.POST.get ("txttelefono")
+    
+            # Comparar cambios antes de guardar
+        campos_modificados = []
+        for campo in ['identificacion', 'nombre', 'apellido', 'telefono']:
+            if getattr(visitante_original, campo) != getattr(visitante, campo):
+                campos_modificados.append(campo)
+
 
         visitante.save() # GUARDAR EN LA BASE DE DATOS MYSQL LOS CAMBIOS
+
+
+        #CONDICIONAL PARA ESPECIFICAR EL DETALLE DEL CAMPO MODIFICADO, ESTO ES PARA EL CONTROL DE AUDITORIA
+        
+        # Lista para acumular todos los mensajes
+        detalles_list = []
+
+        for campo in campos_modificados:
+            if campo == 'identificacion':
+                detalles_list.append(
+                    f"IDENTIFICACIÓN: de {visitante_original.identificacion} a {visitante.identificacion}"
+                )
+            elif campo == 'nombre':
+                detalles_list.append(
+                    f"NOMBRE: de '{visitante_original.nombre}' a '{visitante.nombre}'"
+                )
+            elif campo == 'apellido':
+                detalles_list.append(
+                    f"APELLIDO: de '{visitante_original.apellido}' a '{visitante.apellido}'"
+                )
+            elif campo == 'telefono':
+                detalles_list.append(
+                    f"TELÉFONO: de {visitante_original.telefono} a {visitante.telefono}"
+                )
+
+            # Si solo hay un cambio, mensaje simple
+            if len(detalles_list) == 1:
+                detalles = f"El usuario {request.user.nombre} modificó el campo {detalles_list[0]} del visitante {visitante.identificacion}"
+            elif len(detalles_list) > 1:
+                detalles = f"El usuario {request.user.nombre} modificó los siguientes campos del visitante {visitante.identificacion}: " + "; ".join(detalles_list)
+            
+
+        # Registrar en auditoría para modificacion
+        Auditoria.objects.create(
+            usuario=request.user if request.user.is_authenticated else None,
+            visita=visitante,
+            accion="MODIFICACIÓN",
+            detalles=detalles
+        )
 
     return redirect ('visitantes') # REDIRIGE A LA VISTA VISITANTES
 
 #===========================================================================================================
 def auditoria(request):
 
-    return render(request, "paginas/Historial_Auditoria.html")
+    registros = Auditoria.objects.select_related("usuario", "visita").order_by("-fecha_hora")
+
+    return render(request, "paginas/Historial_Auditoria.html", {"registros": registros})
 
 
 

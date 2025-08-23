@@ -16,17 +16,23 @@
         </thead>
 
         <tbody>
+
+            {% for registro in registros %}
             <tr>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td>{{ registro.fecha_hora }}</td>
+                <td>{% if registro.usuario %}
+                        {{ registro.usuario.nombre }}
+                    {% else %}
+                        Sin usuario
+                    {% endif %}
+                </td>
+                <td>{{ registro.accion }}</td>
+                <td>{{ registro.visita.nombre }} {{ registro.visita.apellido }}</td>
+                <td>{{ registro.detalles }}</td>
             </tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
+            {% endfor %}
+
         </tbody>
-        
+
     </table>
 {% endblock %}
