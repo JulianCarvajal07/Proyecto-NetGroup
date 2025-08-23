@@ -152,7 +152,7 @@ def preregistro(request):
                 usuario=request.user if request.user.is_authenticated else None,
                 visita=visitante,
                 accion="CREACIÓN",
-                detalles=f"El usuario {request.user.nombre} registró al visitante {visitante.nombre} {visitante.apellido}"
+                detalles=f"El usuario {request.user.nombre} registró al visitante {visitante.nombre} {visitante.apellido} con identificacion: {visitante.identificacion}"
                 )
 
             messages.success(request, "Visita registrada correctamente.")
