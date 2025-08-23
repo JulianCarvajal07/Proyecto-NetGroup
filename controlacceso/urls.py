@@ -14,6 +14,7 @@ urlpatterns = [
     path('salida/', views.boton_salida, name='boton_salida'),
     path('buscar_por_identificacion/', views.buscar_por_identificacion, name='buscar_por_identificacion'),
     path('modificar_visitante/', views.modificar_visitante, name='modificar_visitante'),
+    path('Historial_Auditoria/', views.auditoria, name='Auditoria'),
 ]
 
 if settings.DEBUG:

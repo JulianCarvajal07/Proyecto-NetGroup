@@ -2,7 +2,7 @@ import base64
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.files.base import ContentFile
 from django.contrib import messages
-from .models import Usuarios, visita
+from .models import Usuarios, visita, Auditoria
 from django.utils import timezone
 from django.db.models import Q
 import pytz
@@ -14,7 +14,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator
 from django.contrib import messages
-from django.http import HttpResponseForbidden
+from django.http import HttpResponse
 from django.conf import settings
 import os
 
@@ -145,6 +145,15 @@ def preregistro(request):
 
                 except Exception as e:
                     print(f"Error guardando imagen PNG: {e}")
+
+                
+                # Crear registro de auditoría
+                Auditoria.objects.create(
+                usuario=request.user if request.user.is_authenticated else None,
+                visita=visitante,
+                accion="CREACIÓN",
+                detalles=f"El usuario {request.user.nombre} registró al visitante {visitante.nombre} {visitante.apellido}"
+        )
 
             messages.success(request, "Visita registrada correctamente.")
 
@@ -401,6 +410,11 @@ def modificar_visitante (request):
         visitante.save() # GUARDAR EN LA BASE DE DATOS MYSQL LOS CAMBIOS
 
     return redirect ('visitantes') # REDIRIGE A LA VISTA VISITANTES
+
+#===========================================================================================================
+def auditoria(request):
+
+    return render(request, "paginas/Historial_Auditoria.html")
 
 
 

@@ -88,3 +88,23 @@ class visita (models.Model):
         managed = True      # Para que Django no intente crearla ni modificarla
 
 # Create your models here.
+
+#=====================================================================================================
+
+class Auditoria(models.Model):
+    usuario = models.ForeignKey(
+        Usuarios, on_delete=models.SET_NULL, null=True, blank=True,
+        related_name="acciones_realizadas"
+    )
+    visita = models.ForeignKey(
+        visita, on_delete=models.SET_NULL, null=True, blank=True,
+        related_name="acciones_auditoria"
+    )
+    accion = models.CharField(max_length=50)  # Ej: 'CREAR', 'MODIFICAR', 'ELIMINAR'
+    fecha_hora = models.DateTimeField(auto_now_add=True)
+
+    detalles = models.TextField(null=True, blank=True)  # Opcional, para guardar qué se cambió
+
+    def __str__(self):
+        return f"{self.usuario} - {self.accion} - {self.fecha_hora}"
+
