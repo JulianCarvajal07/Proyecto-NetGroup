@@ -463,7 +463,55 @@ def modificar_visitante (request):
 #===========================================================================================================
 def auditoria(request):
 
+    query = request.GET.get('q')
+    desde = request.GET.get('desde')
+    hasta = request.GET.get('hasta')
+
     registros = Auditoria.objects.select_related("usuario", "visita").order_by("-fecha_hora")
+
+
+    # 🔍 Búsqueda general
+    if query:
+        print("INGRESO AL CONDICIONAL DE BUSQUEDA EN GENERAL")
+        registros = Auditoria.objects.filter(
+            Q(usuario__nombre__icontains=query) |
+            Q(visita__identificacion__icontains=query) |
+            Q(visita__telefono__icontains=query) |
+            Q(visita__nombre__icontains=query) |
+            Q(visita__apellido__icontains=query) |
+            Q(accion__icontains=query) 
+            
+        )
+
+# 📅 Filtro por fecha (tener presente que las fechas arrojan tambien la hora por ende se coloca gte y lte)
+    if desde:
+        registros = Auditoria.objects.filter(visita__fecha_ingreso__date__gte=desde) #gte mayor igual que 
+    if hasta: 
+        registros = Auditoria.objects.filter(visita__fecha_ingreso__date__lte=hasta) #lte es menor igual que
+
+
+    #✅ Filtros dinámicos por campo
+    campos_dinamicos = ['accion']
+    for campo in campos_dinamicos:
+        valor = request.GET.get(f'filtro_{campo}')
+        if valor:
+            filtro = {f"{campo}__icontains": valor}
+            registros = registros.filter(**filtro)
+
+    # Paginación 
+    paginator = Paginator(registros, 10)  # ← Aquí se define siempre
+    page_number = request.GET.get('page') or 1  # ← Por defecto, página 1
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'visitantes': registros,
+        'query': query,
+        'desde': desde,
+        'hasta': hasta,
+        'page_obj': page_obj,
+        'MEDIA_URL': settings.MEDIA_URL
+
+    }
 
     return render(request, "paginas/Historial_Auditoria.html", {"registros": registros})
 

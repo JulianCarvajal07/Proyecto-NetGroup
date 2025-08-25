@@ -2,7 +2,49 @@
 
 {% block titulo %}🧍VISITANTES {% endblock %} 
 
+{% load static %}
+
 {% block contenido %}
+
+                        <!-- Filtros avanzados -->
+                        <div class="card mb-4">
+                        <div class="card-body">
+                            <form method="get" id="filtro-form" class="d-flex flex-wrap gap-2 align-items-center justify-content-end">
+
+                            <!-- Búsqueda general -->
+                            <input type="text" name="q" class="form-control form-control-sm" placeholder="Buscar..." value="{{ query }}" style="max-width: 200px;">
+
+                            <!-- Selector de campo -->
+                            <select id="campo-select" class="form-select form-select-sm" style="max-width: 160px;">
+                                <option selected disabled>Filtrar por campo</option>
+                                <option value="accion">Accion</option>
+                            </select>
+
+                            <!-- Input para valor -->
+                            <input type="text" id="campo-valor" class="form-control form-control-sm" placeholder="Valor..." style="max-width: 160px;">
+
+                            <!-- Botón para agregar filtro -->
+                            <button type="button" class="btn btn-sm btn-outline-primary" onclick="agregarFiltro()">Agregar filtro</button>
+
+                            <!-- Filtro por fecha -->
+                            <div class="d-flex align-items-center gap-2 mt-2">
+                                <label class="form-label mb-0">Desde:</label>
+                                <input type="date" name="desde" class="form-control form-control-sm" value="{{ desde }}" style="max-width: 150px;">
+                                
+                                <label class="form-label mb-0">Hasta:</label>
+                                <input type="date" name="hasta" class="form-control form-control-sm" value="{{ hasta }}" style="max-width: 150px;">
+                            </div>
+
+                            <!-- Etiquetas de filtros activos -->
+                            <div id="filtros-activos" class="d-flex flex-wrap gap-2 mt-3"></div>
+
+                            <!-- Botón de búsqueda -->
+                            <button type="submit" class="btn btn-sm btn-primary mt-2">Filtrar</button>
+                            </form>
+                        </div>
+                        </div>
+
+<!--========================================================================================================================================-->
 
     <table class="table">
         <thead>
